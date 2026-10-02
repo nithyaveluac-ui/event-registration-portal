@@ -30,3 +30,4 @@ npm-debug.log*
 # Frontend backup files
 frontend/src/*.working
 frontend/src/*.admin-backup
+frontend/src/*.details-backup

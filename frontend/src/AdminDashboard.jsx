@@ -9,6 +9,7 @@ function AdminDashboard() {
   const [eventFilter, setEventFilter] = useState("All Events");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [selectedRegistration, setSelectedRegistration] = useState(null);
 
   const fetchRegistrations = async () => {
     try {
@@ -278,7 +279,11 @@ function AdminDashboard() {
 
                 <tbody>
                   {filteredRegistrations.map((registration) => (
-                    <tr key={registration.registrationId}>
+                    <tr
+                      key={registration.registrationId}
+                      className="registration-row"
+                      onClick={() => setSelectedRegistration(registration)}
+                    >
 
                       <td>
                         <strong>{registration.studentName}</strong>
@@ -316,6 +321,83 @@ function AdminDashboard() {
           )}
 
         </section>
+
+        {selectedRegistration && (
+          <div
+            className="details-overlay"
+            onClick={() => setSelectedRegistration(null)}
+          >
+            <div
+              className="details-modal"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="details-modal-header">
+                <div>
+                  <span className="section-label">REGISTRATION</span>
+                  <h2>Registration Details</h2>
+                </div>
+
+                <button
+                  type="button"
+                  className="details-close-button"
+                  onClick={() => setSelectedRegistration(null)}
+                  aria-label="Close registration details"
+                >
+                  ×
+                </button>
+              </div>
+
+              <div className="details-grid">
+                <div className="details-item">
+                  <span>Student Name</span>
+                  <strong>{selectedRegistration.studentName || "-"}</strong>
+                </div>
+
+                <div className="details-item">
+                  <span>Student ID</span>
+                  <strong>{selectedRegistration.studentId || "-"}</strong>
+                </div>
+
+                <div className="details-item">
+                  <span>Email</span>
+                  <strong>{selectedRegistration.email || "-"}</strong>
+                </div>
+
+                <div className="details-item">
+                  <span>Event</span>
+                  <strong>{selectedRegistration.eventName || "-"}</strong>
+                </div>
+
+                <div className="details-item">
+                  <span>Registration ID</span>
+                  <strong>{selectedRegistration.registrationId || "-"}</strong>
+                </div>
+
+                <div className="details-item">
+                  <span>Registered At</span>
+                  <strong>{formatDate(selectedRegistration.timestamp)}</strong>
+                </div>
+
+                <div className="details-item">
+                  <span>Status</span>
+                  <strong>
+                    {selectedRegistration.status || "Registered"}
+                  </strong>
+                </div>
+              </div>
+
+              <div className="details-modal-footer">
+                <button
+                  type="button"
+                  className="details-close-action"
+                  onClick={() => setSelectedRegistration(null)}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
       </div>
     </div>
