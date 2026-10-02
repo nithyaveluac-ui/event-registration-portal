@@ -131,6 +131,87 @@ function AdminDashboard() {
           </div>
 
         </section>
+      
+                <section className="analytics-section">
+          <div className="analytics-header">
+            <div>
+              <span className="section-label">INSIGHTS</span>
+              <h2>Registration Analytics</h2>
+              <p>Event-wise registration overview</p>
+            </div>
+          </div>
+
+          <div className="analytics-grid">
+            <div className="analytics-card">
+              <div className="analytics-card-top">
+                <span>Tech Workshop</span>
+                <strong>{stats.workshop}</strong>
+              </div>
+
+              <div className="analytics-bar">
+                <div
+                  className="analytics-fill workshop-fill"
+                  style={{
+                    width: `${stats.total ? (stats.workshop / stats.total) * 100 : 0}%`,
+                  }}
+                />
+              </div>
+
+              <small>
+                {stats.total
+                  ? Math.round((stats.workshop / stats.total) * 100)
+                  : 0}
+                % of registrations
+              </small>
+            </div>
+
+            <div className="analytics-card">
+              <div className="analytics-card-top">
+                <span>Career Fair</span>
+                <strong>{stats.career}</strong>
+              </div>
+
+              <div className="analytics-bar">
+                <div
+                  className="analytics-fill career-fill"
+                  style={{
+                    width: `${stats.total ? (stats.career / stats.total) * 100 : 0}%`,
+                  }}
+                />
+              </div>
+
+              <small>
+                {stats.total
+                  ? Math.round((stats.career / stats.total) * 100)
+                  : 0}
+                % of registrations
+              </small>
+            </div>
+
+            <div className="analytics-card">
+              <div className="analytics-card-top">
+                <span>Hackathon</span>
+                <strong>{stats.hackathon}</strong>
+              </div>
+
+              <div className="analytics-bar">
+                <div
+                  className="analytics-fill hackathon-fill"
+                  style={{
+                    width: `${stats.total ? (stats.hackathon / stats.total) * 100 : 0}%`,
+                  }}
+                />
+              </div>
+
+              <small>
+                {stats.total
+                  ? Math.round((stats.hackathon / stats.total) * 100)
+                  : 0}
+                % of registrations
+              </small>
+            </div>
+          </div>
+        </section>
 
         <section className="registration-panel">
 
