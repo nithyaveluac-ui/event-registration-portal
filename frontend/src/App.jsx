@@ -27,7 +27,7 @@ function App() {
   const [showAdmin, setShowAdmin] = useState(false);
   const [formData, setFormData] = useState({
     studentName: "",
-    email: "",
+    studentEmail: "",
     studentId: "",
     eventName: "",
   });
@@ -68,11 +68,11 @@ function App() {
       }
 
       setMessage(data.message);
-      setRegistrationId(data.registration.registrationId);
+      setRegistrationId(data.registrationId);
 
       setFormData({
         studentName: "",
-        email: "",
+        studentEmail: "",
         studentId: "",
         eventName: "",
       });
@@ -320,8 +320,8 @@ function App() {
             <label>Email Address</label>
             <input
               type="email"
-              name="email"
-              value={formData.email}
+              name="studentEmail"
+              value={formData.studentEmail}
               onChange={handleChange}
               placeholder="you@example.com"
               required
