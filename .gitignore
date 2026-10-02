@@ -26,3 +26,6 @@ npm-debug.log*
 
 # AWS
 .aws/
+
+# Frontend backup files
+frontend/src/*.working
