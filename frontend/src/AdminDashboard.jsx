@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { fetchAuthSession } from "aws-amplify/auth";
 
 const API_URL =
   "https://o41h3b0aw4.execute-api.ap-south-1.amazonaws.com/prod/registrations";
@@ -16,7 +17,19 @@ function AdminDashboard() {
       setLoading(true);
       setError("");
 
-      const response = await fetch(API_URL);
+      const session = await fetchAuthSession();
+
+const idToken = session.tokens?.idToken?.toString();
+
+if (!idToken) {
+  throw new Error("Admin session expired. Please login again.");
+}
+
+const response = await fetch(API_URL, {
+  headers: {
+    Authorization: `Bearer ${idToken}`,
+  },
+});
       const data = await response.json();
 
       if (!response.ok || !data.success) {

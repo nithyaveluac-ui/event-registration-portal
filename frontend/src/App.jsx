@@ -1,5 +1,6 @@
 import { useState } from "react";
 import AdminDashboard from "./AdminDashboard";
+import AdminLogin from "./AdminLogin";
 import "./App.css";
 
 const API_URL =
@@ -25,7 +26,8 @@ const events = [
 
 function App() {
   const [showAdmin, setShowAdmin] = useState(false);
-  const [formData, setFormData] = useState({
+const [adminLoggedIn, setAdminLoggedIn] = useState(false);  
+const [formData, setFormData] = useState({
     studentName: "",
     studentEmail: "",
     studentId: "",
@@ -89,19 +91,40 @@ function App() {
       ?.scrollIntoView({ behavior: "smooth" });
   };
 
-  if (showAdmin) {
-    return (
-      <>
-        <AdminDashboard />
-        <button
-          className="back-home-button"
-          onClick={() => setShowAdmin(false)}
-        >
-          ← Back to EventHub
-        </button>
-      </>
-    );
-  }
+  if (showAdmin && !adminLoggedIn) {
+  return (
+    <>
+      <AdminLogin
+        onLogin={() => setAdminLoggedIn(true)}
+      />
+
+      <button
+        className="back-home-button"
+        onClick={() => setShowAdmin(false)}
+      >
+        ← Back to EventHub
+      </button>
+    </>
+  );
+}
+
+if (showAdmin && adminLoggedIn) {
+  return (
+    <>
+      <AdminDashboard />
+
+      <button
+        className="back-home-button"
+        onClick={() => {
+          setAdminLoggedIn(false);
+          setShowAdmin(false);
+        }}
+      >
+        ← Back to EventHub
+      </button>
+    </>
+  );
+}
 
   return (
     <div className="app">
