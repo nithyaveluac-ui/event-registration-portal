@@ -1,5 +1,5 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { PutCommand, DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
+import { PutCommand, ScanCommand, DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 import { SNSClient, PublishCommand } from '@aws-sdk/client-sns';
 
 // Initialize AWS clients
@@ -41,6 +41,28 @@ function validateRegistrationData(data) {
     isValid: Object.keys(errors).length === 0,
     errors
   };
+}
+
+/**
+ * Check whether the student is already registered for the same event
+ * @param {string} studentId - Student ID
+ * @param {string} eventName - Event name
+ * @returns {Promise<boolean>} - True when a duplicate registration exists
+ */
+async function isDuplicateRegistration(studentId, eventName) {
+  const scanCommand = new ScanCommand({
+    TableName: process.env.TABLE_NAME,
+    FilterExpression: "studentId = :studentId AND eventName = :eventName",
+    ExpressionAttributeValues: {
+      ":studentId": studentId.trim(),
+      ":eventName": eventName.trim()
+    },
+    ProjectionExpression: "registrationId"
+  });
+
+  const result = await docClient.send(scanCommand);
+
+  return (result.Items || []).length > 0;
 }
 
 /**
@@ -115,6 +137,27 @@ export const handler = async (event) => {
       };
     }
     
+    // Check for duplicate registration
+    const duplicateExists = await isDuplicateRegistration(
+      data.studentId,
+      data.eventName
+    );
+
+    if (duplicateExists) {
+      console.log(
+        `Duplicate registration blocked for student ${data.studentId} and event ${data.eventName}`
+      );
+
+      return {
+        statusCode: 409,
+        headers,
+        body: JSON.stringify({
+          success: false,
+          message: 'You are already registered for this event'
+        })
+      };
+    }
+
     // Generate unique registration ID
     const timestamp = Date.now();
     const randomString = generateRandomString(6);
