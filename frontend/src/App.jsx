@@ -1,4 +1,5 @@
 import { useState } from "react";
+import AdminDashboard from "./AdminDashboard";
 import "./App.css";
 
 const API_URL =
@@ -23,6 +24,7 @@ const events = [
 ];
 
 function App() {
+  const [showAdmin, setShowAdmin] = useState(false);
   const [formData, setFormData] = useState({
     studentName: "",
     email: "",
@@ -87,6 +89,20 @@ function App() {
       ?.scrollIntoView({ behavior: "smooth" });
   };
 
+  if (showAdmin) {
+    return (
+      <>
+        <AdminDashboard />
+        <button
+          className="back-home-button"
+          onClick={() => setShowAdmin(false)}
+        >
+          ← Back to EventHub
+        </button>
+      </>
+    );
+  }
+
   return (
     <div className="app">
 
@@ -110,7 +126,7 @@ function App() {
           <a href="#events">Events</a>
           <a href="#about">About</a>
           <a href="#register">Register</a>
-          <a href="#admin">Admin</a>
+          <button type="button" className="nav-admin-link" onClick={() => setShowAdmin(true)}>Admin</button>
         </div>
 
         <button className="nav-button" onClick={scrollToRegister}>
