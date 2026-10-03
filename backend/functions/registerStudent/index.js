@@ -173,7 +173,8 @@ export const handler = async (event) => {
       studentEmail: data.studentEmail.trim().toLowerCase(),
       studentId: data.studentId.trim(),
       eventName: data.eventName.trim(),
-      timestamp: timestampISO
+      timestamp: timestampISO,
+      status: "Pending"
     };
     
     console.log('Storing registration:', registration);
