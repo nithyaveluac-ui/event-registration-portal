@@ -1,8 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { fetchAuthSession } from "aws-amplify/auth";
+import { Html5Qrcode } from "html5-qrcode";
 
 const API_URL =
   "https://o41h3b0aw4.execute-api.ap-south-1.amazonaws.com/prod/registrations";
+
+const CHECKIN_API_URL =
+  "https://ophqjqinza.execute-api.ap-south-1.amazonaws.com/prod/registrations/check-in";
 
 function AdminDashboard() {
   const [registrations, setRegistrations] = useState([]);
@@ -11,6 +15,102 @@ function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedRegistration, setSelectedRegistration] = useState(null);
+  const [scanner, setScanner] = useState(null);
+  const [scannerRunning, setScannerRunning] = useState(false);
+  const [scanMessage, setScanMessage] = useState("");
+  const [scanError, setScanError] = useState("");
+  const [checkedInStudent, setCheckedInStudent] = useState(null);
+  const [checkingIn, setCheckingIn] = useState(false);
+
+  const handleQrScan = async (decodedText) => {
+    if (checkingIn) return;
+
+    const registrationId = decodedText?.trim();
+
+    if (!registrationId) {
+      setScanError("Invalid QR code");
+      return;
+    }
+
+    try {
+      setCheckingIn(true);
+      setScanMessage("");
+      setScanError("");
+      setCheckedInStudent(null);
+
+      const response = await fetch(CHECKIN_API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          registrationId,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Check-in failed");
+      }
+
+      setCheckedInStudent(data.registration);
+      setScanMessage("Student checked in successfully");
+
+      await fetchRegistrations();
+    } catch (err) {
+      setScanError(err.message || "Unable to check in student");
+    } finally {
+      setCheckingIn(false);
+    }
+  };
+
+  const startScanner = async () => {
+    try {
+      setScanMessage("");
+      setScanError("");
+
+      if (scannerRunning) return;
+
+      const qrScanner = new Html5Qrcode("qr-reader");
+
+      await qrScanner.start(
+        { facingMode: "environment" },
+        {
+          fps: 10,
+          qrbox: { width: 250, height: 250 },
+        },
+        async (decodedText) => {
+          await qrScanner.stop();
+          setScannerRunning(false);
+          setScanner(null);
+          await handleQrScan(decodedText);
+        },
+        () => {}
+      );
+
+      setScanner(qrScanner);
+      setScannerRunning(true);
+    } catch (err) {
+      setScanError(
+        err.message || "Unable to start camera. Please allow camera permission."
+      );
+      setScannerRunning(false);
+    }
+  };
+
+  const stopScanner = async () => {
+    try {
+      if (scanner) {
+        await scanner.stop();
+        setScanner(null);
+      }
+    } catch (err) {
+      console.error("Scanner stop error:", err);
+    } finally {
+      setScannerRunning(false);
+    }
+  };
 
   const fetchRegistrations = async () => {
     try {
@@ -146,7 +246,100 @@ const response = await fetch(API_URL, {
 
         </section>
       
-                <section className="analytics-section">
+                <section className="qr-scanner-section">
+          <div className="qr-scanner-header">
+            <div>
+              <span className="section-label">CHECK-IN</span>
+              <h2>QR Code Scanner</h2>
+              <p>Scan a student's registration QR code to check them in.</p>
+            </div>
+
+            <div className="qr-scanner-actions">
+              {!scannerRunning ? (
+                <button
+                  type="button"
+                  className="refresh-button"
+                  onClick={startScanner}
+                  disabled={checkingIn}
+                >
+                  📷 Start Scanner
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="refresh-button"
+                  onClick={stopScanner}
+                >
+                  ⏹ Stop Scanner
+                </button>
+              )}
+            </div>
+          </div>
+
+          <div className="qr-scanner-content">
+            <div
+              id="qr-reader"
+              className="qr-reader"
+            />
+
+            {!scannerRunning && (
+              <div className="qr-scanner-placeholder">
+                <span>📷</span>
+                <h3>Scanner is stopped</h3>
+                <p>Click "Start Scanner" and allow camera access.</p>
+              </div>
+            )}
+
+            {checkingIn && (
+              <div className="qr-scan-status">
+                Checking in student...
+              </div>
+            )}
+
+            {scanMessage && (
+              <div className="qr-scan-success">
+                ✅ {scanMessage}
+              </div>
+            )}
+
+            {scanError && (
+              <div className="qr-scan-error">
+                ❌ {scanError}
+              </div>
+            )}
+
+            {checkedInStudent && (
+              <div className="qr-student-result">
+                <span className="section-label">CHECK-IN SUCCESS</span>
+                <h3>{checkedInStudent.studentName || "-"}</h3>
+
+                <div className="qr-result-grid">
+                  <div>
+                    <span>Student ID</span>
+                    <strong>{checkedInStudent.studentId || "-"}</strong>
+                  </div>
+
+                  <div>
+                    <span>Event</span>
+                    <strong>{checkedInStudent.eventName || "-"}</strong>
+                  </div>
+
+                  <div>
+                    <span>Registration ID</span>
+                    <strong>{checkedInStudent.registrationId || "-"}</strong>
+                  </div>
+
+                  <div>
+                    <span>Check-in Status</span>
+                    <strong>{checkedInStudent.checkInStatus || "-"}</strong>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+
+        <section className="analytics-section">
           <div className="analytics-header">
             <div>
               <span className="section-label">INSIGHTS</span>
