@@ -1,3 +1,4 @@
+import QRCode from "react-qr-code";
 import { useState } from "react";
 import AdminDashboard from "./AdminDashboard";
 import AdminLogin from "./AdminLogin";
@@ -83,6 +84,30 @@ const [formData, setFormData] = useState({
     } finally {
       setLoading(false);
     }
+  };
+
+  const downloadQRPass = () => {
+    const svg = document.querySelector(".qr-code-container svg");
+
+    if (!svg || !registrationId) {
+      return;
+    }
+
+    const svgData = new XMLSerializer().serializeToString(svg);
+    const svgBlob = new Blob([svgData], {
+      type: "image/svg+xml;charset=utf-8",
+    });
+
+    const url = URL.createObjectURL(svgBlob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = `${registrationId}-QR-Pass.svg`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
   };
 
   const scrollToRegister = () => {
@@ -385,15 +410,33 @@ if (showAdmin && adminLoggedIn) {
             </button>
           </form>
 
-          {message && (
+          {message && registrationId && (
             <div className="success-message">
               <div className="success-icon">✓</div>
+
               <strong>{message}</strong>
+
               <p>
                 Your Registration ID:
                 <br />
                 <b>{registrationId}</b>
               </p>
+
+              <div className="qr-pass">
+                <div className="qr-code-container">
+                  <QRCode
+                    value={registrationId}
+                    size={180}
+                    level="M"
+                  />
+                </div>
+
+                <h3>Event QR Pass</h3>
+
+                <p className="qr-instruction">
+                  Show this QR code at the event check-in.
+                </p>
+              </div>
             </div>
           )}
 

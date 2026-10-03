@@ -1925,3 +1925,34 @@ footer > span {
     margin-bottom: 20px;
   }
 }
+
+/* =========================
+   QR EVENT PASS
+========================= */
+
+.qr-pass {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(66, 100, 60, 0.2);
+}
+
+.qr-code-container {
+  width: 196px;
+  height: 196px;
+  margin: 0 auto 14px;
+  padding: 8px;
+  background: #ffffff;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+}
+
+.qr-pass h3 {
+  margin: 10px 0 6px;
+  font-size: 18px;
+}
+
+.qr-instruction {
+  margin: 0;
+  font-size: 14px;
+}
