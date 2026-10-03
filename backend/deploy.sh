@@ -67,8 +67,11 @@ LIST_STATUS=$?
 
 echo ""
 
-create_package "updateRegistration"
-UPDATE_STATUS=$?
+
+echo ""
+
+create_package "checkInRegistration"
+CHECKIN_STATUS=$?
 
 echo ""
 echo "================================"
@@ -96,6 +99,13 @@ else
     echo -e "${RED}✗ updateRegistration.zip failed${NC}"
 fi
 
+if [ $CHECKIN_STATUS -eq 0 ]; then
+    echo -e "${GREEN}✓ checkInRegistration.zip created successfully${NC}"
+    echo "  Location: functions/checkInRegistration/checkInRegistration.zip"
+else
+    echo -e "${RED}✗ checkInRegistration.zip failed${NC}"
+fi
+
 echo ""
 echo "Next Steps:"
 echo "1. Go to AWS Lambda Console"
@@ -104,7 +114,7 @@ echo "3. Configure environment variables"
 echo "4. Test the functions"
 echo ""
 
-if [ $REGISTER_STATUS -ne 0 ] || [ $LIST_STATUS -ne 0 ] || [ $UPDATE_STATUS -ne 0 ]; then
+if [ $REGISTER_STATUS -ne 0 ] || [ $LIST_STATUS -ne 0 ] || [ $UPDATE_STATUS -ne 0 ] || [ $CHECKIN_STATUS -ne 0 ]; then
     exit 1
 fi
 
