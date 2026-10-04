@@ -1,0 +1,20 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "eventhub-testing",
+  "version": "1.0.0",
+  "description": "Testing guidance for the EventHub event registration portal, including property-based testing, validation, API testing, and registration correctness checks.",
+  "author": {
+    "name": "Nithya Velu"
+  },
+  "keywords": [
+    "eventhub",
+    "testing",
+    "property-based testing",
+    "vitest",
+    "fast-check",
+    "registration",
+    "dynamodb",
+    "api testing"
+  ],
+  "license": "MIT"
+}
