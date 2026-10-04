@@ -1,11 +1,36 @@
 import QRCode from "react-qr-code";
 import { useState } from "react";
+import { motion } from "framer-motion";
 import AdminDashboard from "./AdminDashboard";
 import AdminLogin from "./AdminLogin";
 import "./App.css";
 
 const API_URL =
   "https://ophqjqinza.execute-api.ap-south-1.amazonaws.com/prod/registrations";
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 35 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.7,
+      ease: "easeOut",
+    },
+  },
+};
+
+const fadeRight = {
+  hidden: { opacity: 0, x: 40 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.8,
+      ease: "easeOut",
+    },
+  },
+};
 
 const events = [
   {
@@ -177,15 +202,24 @@ if (showAdmin && adminLoggedIn) {
           <button type="button" className="nav-admin-link" onClick={() => setShowAdmin(true)}>Admin</button>
         </div>
 
-        <button className="nav-button" onClick={scrollToRegister}>
+        <motion.button
+          className="nav-button"
+          onClick={scrollToRegister}
+          whileHover={{ y: -2, scale: 1.03 }}
+          whileTap={{ scale: 0.97 }}
+        >
           Register Now
-        </button>
+        </motion.button>
       </nav>
 
       {/* Hero */}
       <section id="home" className="hero-section">
-        <div className="hero-content">
-
+        <motion.div
+          className="hero-content"
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+        >
           <div className="hero-badge">
             ✦ College Events 2026
           </div>
@@ -204,13 +238,23 @@ if (showAdmin && adminLoggedIn) {
           </p>
 
           <div className="hero-buttons">
-            <button className="primary-button" onClick={scrollToRegister}>
+            <motion.button
+              className="primary-button"
+              onClick={scrollToRegister}
+              whileHover={{ y: -3, scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
               Explore Events →
-            </button>
+            </motion.button>
 
-            <a href="#events" className="secondary-button">
+            <motion.a
+              href="#events"
+              className="secondary-button"
+              whileHover={{ y: -3 }}
+              whileTap={{ scale: 0.98 }}
+            >
               View Upcoming Events
-            </a>
+            </motion.a>
           </div>
 
           <div className="hero-stats">
@@ -229,9 +273,14 @@ if (showAdmin && adminLoggedIn) {
               <span>Opportunities</span>
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="hero-visual">
+        <motion.div
+          className="hero-visual"
+          variants={fadeRight}
+          initial="hidden"
+          animate="visible"
+        >
           <div className="hero-card main-card">
             <div className="floating-icon">🎓</div>
 
@@ -256,7 +305,7 @@ if (showAdmin && adminLoggedIn) {
             🚀
             <span>Career Fair</span>
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* Events */}
@@ -272,10 +321,21 @@ if (showAdmin && adminLoggedIn) {
 
         <div className="event-grid">
           {events.map((event, index) => (
-            <div
+            <motion.div
               className="event-card"
               key={event.title}
-              style={{ animationDelay: `${index * 0.15}s` }}
+              initial={{ opacity: 0, y: 35 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{
+                duration: 0.6,
+                delay: index * 0.15,
+                ease: "easeOut",
+              }}
+              whileHover={{
+                y: -8,
+                transition: { duration: 0.2 },
+              }}
             >
               <div className="event-icon">{event.icon}</div>
 
@@ -290,7 +350,7 @@ if (showAdmin && adminLoggedIn) {
               <button onClick={scrollToRegister}>
                 Register for Event →
               </button>
-            </div>
+            </motion.div>
           ))}
         </div>
       </section>
@@ -303,38 +363,74 @@ if (showAdmin && adminLoggedIn) {
         </div>
 
         <div className="feature-grid">
-          <div className="feature-card">
+          <motion.div
+            className="feature-card"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{
+              duration: 0.6,
+              ease: "easeOut",
+            }}
+          >
             <div>⚡</div>
             <h3>Quick Registration</h3>
             <p>
               Register for your favourite event through a simple
               and easy form.
             </p>
-          </div>
+          </motion.div>
 
-          <div className="feature-card">
+          <motion.div
+            className="feature-card"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{
+              duration: 0.6,
+              ease: "easeOut",
+            }}
+          >
             <div>📩</div>
             <h3>Instant Confirmation</h3>
             <p>
               Your registration is securely stored and confirmation
               is sent through email.
             </p>
-          </div>
+          </motion.div>
 
-          <div className="feature-card">
+          <motion.div
+            className="feature-card"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{
+              duration: 0.6,
+              ease: "easeOut",
+            }}
+          >
             <div>☁️</div>
             <h3>Cloud Powered</h3>
             <p>
               Built using AWS serverless technologies for a reliable
               registration experience.
             </p>
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Registration */}
       <section id="register" className="register-section">
-        <div className="register-intro">
+        <motion.div
+          className="register-intro"
+          initial={{ opacity: 0, x: -40 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{
+            duration: 0.7,
+            ease: "easeOut",
+          }}
+        >
           <span>READY TO JOIN?</span>
           <h2>Reserve Your Spot</h2>
           <p>
@@ -347,9 +443,19 @@ if (showAdmin && adminLoggedIn) {
             <div>✓ Secure cloud storage</div>
             <div>✓ Email confirmation</div>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="registration-card">
+        <motion.div
+          className="registration-card"
+          initial={{ opacity: 0, x: 40 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{
+            duration: 0.7,
+            delay: 0.15,
+            ease: "easeOut",
+          }}
+        >
           <h3>Student Registration</h3>
           <p>Enter your details below</p>
 
@@ -411,7 +517,15 @@ if (showAdmin && adminLoggedIn) {
           </form>
 
           {message && registrationId && (
-            <div className="success-message">
+            <motion.div
+              className="success-message"
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{
+                duration: 0.6,
+                ease: "easeOut",
+              }}
+            >
               <div className="success-icon">✓</div>
 
               <strong>{message}</strong>
@@ -422,7 +536,15 @@ if (showAdmin && adminLoggedIn) {
                 <b>{registrationId}</b>
               </p>
 
-              <div className="qr-pass">
+              <motion.div
+                className="qr-pass"
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.5,
+                  delay: 0.2,
+                }}
+              >
                 <div className="qr-code-container">
                   <QRCode
                     value={registrationId}
@@ -436,8 +558,8 @@ if (showAdmin && adminLoggedIn) {
                 <p className="qr-instruction">
                   Show this QR code at the event check-in.
                 </p>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           )}
 
           {error && (
@@ -445,11 +567,19 @@ if (showAdmin && adminLoggedIn) {
               {error}
             </div>
           )}
-        </div>
+        </motion.div>
       </section>
 
       {/* Footer */}
-      <footer>
+      <motion.footer
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{
+          duration: 0.7,
+          ease: "easeOut",
+        }}
+      >
         <div className="footer-logo">
           Event<span>Hub</span>
         </div>
@@ -461,7 +591,7 @@ if (showAdmin && adminLoggedIn) {
         <span>
           © 2026 EventHub. Built for college events.
         </span>
-      </footer>
+      </motion.footer>
 
     </div>
   );

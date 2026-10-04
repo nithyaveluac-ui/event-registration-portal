@@ -193,7 +193,7 @@ const response = await fetch(API_URL, {
       const matchesSearch =
         registration.studentName?.toLowerCase().includes(searchText) ||
         registration.studentId?.toLowerCase().includes(searchText) ||
-        registration.email?.toLowerCase().includes(searchText);
+        (registration.studentEmail || registration.email || '').toLowerCase().includes(searchText);
 
       const matchesEvent =
         eventFilter === "All Events" ||
@@ -538,7 +538,7 @@ const response = await fetch(API_URL, {
                       </td>
 
                       <td>
-                        {registration.email}
+                        {registration.studentEmail || registration.email || '-'}
                       </td>
 
                       <td>

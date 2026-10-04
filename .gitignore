@@ -31,3 +31,13 @@ npm-debug.log*
 frontend/src/*.working
 frontend/src/*.admin-backup
 frontend/src/*.details-backup
+
+# Local backup files
+*.backup
+*.before-*
+*.hero-final-backup
+*.qr-error-backup
+ui-backup-before-redesign/
+
+# Unused updateRegistration function
+backend/functions/updateRegistration/
