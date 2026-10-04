@@ -5,7 +5,7 @@ import AdminLogin from "./AdminLogin";
 import "./App.css";
 
 const API_URL =
-  "https://o41h3b0aw4.execute-api.ap-south-1.amazonaws.com/prod/registrations";
+  "https://ophqjqinza.execute-api.ap-south-1.amazonaws.com/prod/registrations";
 
 const events = [
   {

@@ -3,7 +3,7 @@ import { fetchAuthSession } from "aws-amplify/auth";
 import { Html5Qrcode } from "html5-qrcode";
 
 const API_URL =
-  "https://o41h3b0aw4.execute-api.ap-south-1.amazonaws.com/prod/registrations";
+  "https://ophqjqinza.execute-api.ap-south-1.amazonaws.com/prod/registrations";
 
 const CHECKIN_API_URL =
   "https://ophqjqinza.execute-api.ap-south-1.amazonaws.com/prod/registrations/check-in";
@@ -69,33 +69,71 @@ function AdminDashboard() {
     try {
       setScanMessage("");
       setScanError("");
+      setCheckedInStudent(null);
 
       if (scannerRunning) return;
+
+      const cameras = await Html5Qrcode.getCameras();
+
+      if (!cameras || cameras.length === 0) {
+        throw new Error("No camera found");
+      }
+
+      console.log("Available cameras:", cameras);
+
+      const camera =
+        cameras.find((cam) =>
+          cam.label?.toLowerCase().includes("hp truevision")
+        ) || cameras[0];
+
+      console.log("Selected camera:", camera);
 
       const qrScanner = new Html5Qrcode("qr-reader");
 
       await qrScanner.start(
-        { facingMode: "environment" },
+        camera.id,
         {
-          fps: 10,
-          qrbox: { width: 250, height: 250 },
+          fps: 15,
+          qrbox: {
+            width: 300,
+            height: 300,
+          },
+          aspectRatio: 1.0,
+          disableFlip: false,
         },
         async (decodedText) => {
-          await qrScanner.stop();
+          console.log("QR CODE DETECTED:", decodedText);
+
+          try {
+            await qrScanner.stop();
+          } catch (stopError) {
+            console.error("Scanner stop error:", stopError);
+          }
+
           setScannerRunning(false);
           setScanner(null);
+
           await handleQrScan(decodedText);
         },
-        () => {}
+        (errorMessage) => {
+          // QR not detected yet.
+          // This callback runs continuously while scanning.
+        }
       );
 
       setScanner(qrScanner);
       setScannerRunning(true);
+
+      console.log("QR scanner started successfully");
     } catch (err) {
+      console.error("QR scanner error:", err);
+
       setScanError(
         err.message || "Unable to start camera. Please allow camera permission."
       );
+
       setScannerRunning(false);
+      setScanner(null);
     }
   };
 
@@ -515,7 +553,7 @@ const response = await fetch(API_URL, {
 
                       <td>
                         <span className="status-badge">
-                          {registration.status || "Registered"}
+                          {registration.checkInStatus || registration.status || "Registered"}
                         </span>
                       </td>
 
