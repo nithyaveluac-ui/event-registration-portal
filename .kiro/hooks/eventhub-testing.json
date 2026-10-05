@@ -1,0 +1,17 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "EventHub Testing on Frontend Save",
+      "description": "Runs EventHub property-based tests when frontend source files are saved.",
+      "trigger": "PostFileSave",
+      "matcher": "^frontend/src/.*\\.(js|jsx|ts|tsx)$",
+      "action": {
+        "type": "command",
+        "command": "cd frontend && npm test -- --run"
+      },
+      "timeout": 60,
+      "enabled": true
+    }
+  ]
+}
